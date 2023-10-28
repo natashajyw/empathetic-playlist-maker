@@ -4,10 +4,7 @@ from hume import HumeStreamClient
 from hume.models.config import LanguageConfig
 
 samples = [
-    "Mary had a little lamb,",
-    "Its fleece was white as snow."
-    "Everywhere the child went,"
-    "The little lamb was sure to go."
+    "This is unbelieveable! I really want to have pizza right now."
 ]
 
 async def main():
@@ -17,6 +14,10 @@ async def main():
         for sample in samples:
             result = await socket.send_text(sample)
             emotions = result["language"]["predictions"][0]["emotions"]
-            print(emotions)
+            return emotions
 
-asyncio.run(main())
+async def function():
+    list = await main()
+    print(list)
+
+asyncio.run(function())
