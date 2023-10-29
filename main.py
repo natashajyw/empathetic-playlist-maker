@@ -8,13 +8,15 @@ samples = [
     "Today is a great day. I absolutely love the weather we have and I can't wait to get started with work today."
 ]
 
+attribute_list = [[0.0 for i in range(4)] for j in range(3)]
+
 class MusAttribute(Enum):
     ENERGY = 0
     LIVENESS = 1
     LOUDNESS = 2
     TEMPO = 3
 
-async def main():
+async def CallHume():
     client = HumeStreamClient("7kBEBKHVRNGmYD4OQfIusARM8g40nvEGf5cXpUiAeohJZhCE")
     config = LanguageConfig()
     async with client.connect([config]) as socket:
@@ -23,8 +25,8 @@ async def main():
             emotions = result["language"]["predictions"][0]["emotions"]
             return emotions
 
-async def function():
-    list = await main()
+async def DetermineAttributes():
+    list = await CallHume()
     values_to_keep = ['Anger', 'Anxiety', 'Calmness', 'Distress', 'Ecstasy', 'Enthusiasm', 'Excitement', 'Joy', 'Sadness']
 
     emotion_list = [item for item in list if item['name'] in values_to_keep]
@@ -34,8 +36,6 @@ async def function():
 
     for item in emotion_list:
         print(item)
-
-    attribute_list = [[0.0 for i in range(4)] for j in range(3)]
 
     for i in range(3):
         if emotion_list[i]['name'] == 'Anger' or emotion_list[i]['name'] == 'Distress' or emotion_list[i]['name'] == 'Anxiety' or emotion_list[i]['name'] == 'Calmness':
@@ -57,7 +57,10 @@ async def function():
     for item in attribute_list:
         print(item)
 
-asyncio.run(function())
+def ReturnMusAttribute():
+    return attribute_list;
+
+asyncio.run(DetermineAttributes())
 
 
 
