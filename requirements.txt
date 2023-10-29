@@ -1,2 +1,6 @@
-hume 0.4.1
-ipykernel 6.26.0
+hume==0.4.1
+ipykernel==6.26.0
+spotipy==2.23.0
+streamlit==1.28.0
+hume[stream]
+python-dotenv==1.0.0
