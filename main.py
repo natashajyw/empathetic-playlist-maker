@@ -1,11 +1,20 @@
 import asyncio
+import os
+import sys
+import spotipy
+import spotipy.util as util
+from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyOAuth
+from hume import HumeStreamClient
+from hume.models.config import LanguageConfig
+from dotenv import load_dotenv
 
 from enum import Enum
 from hume import HumeStreamClient
 from hume.models.config import LanguageConfig
 
 samples = [
-    "Today is a great day. I absolutely love the weather we have and I can't wait to get started with work today."
+    "Today was a fun day and I can't wait to go back to school again tomorrow."
 ]
 
 attribute_list = [[0.0 for i in range(4)] for j in range(3)]
@@ -58,10 +67,47 @@ async def DetermineAttributes():
         print(item)
 
 def ReturnMusAttribute():
-    return attribute_list;
+    return attribute_list
 
 asyncio.run(DetermineAttributes())
+song_attributes = ReturnMusAttribute()
 
+scope = 'user-library-read playlist-modify-public'
 
+if len(sys.argv) > 1:
+    username = sys.argv[1]
+else:
+    print("Usage: %s username" % (sys.argv[0],))
+    sys.exit()
 
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
+results = sp.current_user_saved_tracks()
+for idx, item in enumerate(results['items']):
+    track = item['track']
+    print(idx, track['artists'][0]['name'], " – ", track['name'])
+# token = util.prompt_for_user_token(username, scope)
+# print("received token")
+# if token:
+#     print("received token")
+#     sp = spotipy.Spotify(auth=token)
+#     # Get user id
+#     user_id = sp.current_user().get('id')
+#     # Create new playlist & get playlist id
+#     new_playlist = sp.user_playlist_create(user=user_id, name="Mood Playlist", public=True, description="")
+#     new_playlist_id = new_playlist.get('id')
+#     # Recommend Songs & Append Song URIs
+#     song_attributes = ReturnMusAttribute()
+#     print(song_attributes)
+#     # reccs = get_recommendations()
+#     reccs = sp.recommendations(seed_genres=['pop'], target_liveness=song_attributes[0][0], 
+#                                target_energy=song_attributes[0][1], 
+#                                target_loudness=song_attributes[0][2],
+#                                target_tempo=song_attributes[0][3], limit=20)
+#     print("Recommendations:")
+#     print(reccs)
+#     track_uris = [track['uri'] for track in reccs['tracks']]
+#     # Add tracks
+#     sp.user_playlist_add_tracks(user=user_id, playlist_id=new_playlist_id, tracks=track_uris, position=None)
+# else:
+#     print("Can't get token for", username)
